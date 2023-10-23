@@ -1,0 +1,14 @@
+@import "@/assets/scss/app";
+
+*,*::after,*::before {
+    font-family: $font-regular;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    outline: none;
+    font-size: 16px;
+  }
+  ul {
+    list-style: none;
+    
+  }
