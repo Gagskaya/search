@@ -7,15 +7,28 @@ import { User } from "../store/modules/users/types";
 import store from "../store";
 
 const users = computed(() => store.state.users.items);
+const user = computed<User>(() => store.state.users.selectedUser);
+
 const filterValue = ref("");
 
 const onSelectUser = async (user: User) => {
   await store.commit(UsersMutationsTypes.SELECT_USER, user);
-  console.log(store.state);
 };
 
 watchEffect(async () => {
-  await store.dispatch(UsersActionsTypes.FETCH_USERS, filterValue.value);
+  await store.dispatch(
+    UsersActionsTypes.FETCH_USERS,
+    filterValue.value.replace(/\s/g, "").split(",")
+  );
+});
+watchEffect(async () => {
+  if (!filterValue.value.length) {
+    await store.commit(UsersMutationsTypes.SELECT_USER, null);
+  }
+});
+
+watchEffect(() => {
+  console.log(filterValue.value.replace(/\s/g, "").split(","));
 });
 </script>
 <template>
@@ -46,7 +59,10 @@ watchEffect(async () => {
             </svg>
           </div>
           <div
-            class="sidebar__results-card-content"
+            :class="[
+              'sidebar__results-card-content',
+              item.id === user?.id ? 'active' : '',
+            ]"
             @click="onSelectUser(item)"
           >
             <p>{{ item.name }}</p>
@@ -106,7 +122,8 @@ watchEffect(async () => {
           color: #76787d;
           margin-top: 5px;
         }
-        &:hover {
+        &:hover,
+        &.active {
           background-color: #e0e0e0;
           cursor: pointer;
         }

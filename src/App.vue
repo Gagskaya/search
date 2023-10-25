@@ -29,5 +29,6 @@ import "./App.scss";
   box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
   border: 1px solid #dededd;
   margin-top: 26px;
+  min-height: 585px;
 }
 </style>

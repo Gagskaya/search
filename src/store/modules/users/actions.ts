@@ -12,8 +12,12 @@ export const actions = {
       commit(UsersMutationsTypes.SET_LOADING_STATUS, LoadingStatus.LOADING);
       const users = await usersApi.fetchUsers(filterValue);
 
-      if (users) {
-        commit(UsersMutationsTypes.SET_USERS, users);
+      if (!filterValue?.length) {
+        commit(UsersMutationsTypes.SET_USERS, []);
+      } else {
+        if (users) {
+          commit(UsersMutationsTypes.SET_USERS, users);
+        }
       }
     } catch (e) {
       console.log(e);

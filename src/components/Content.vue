@@ -7,8 +7,8 @@ import store from "../store";
 const user = computed<User>(() => store.state.users.selectedUser);
 </script>
 <template>
-  <div class="content">
-    <template v-if="user">
+  <template v-if="user">
+    <div class="content">
       <div class="content__image">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -35,21 +35,19 @@ const user = computed<User>(() => store.state.users.selectedUser);
         <div class="content__info-about">
           <h6 class="content__info-about-title">О себе:</h6>
           <p class="content__info-about-text">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
-            ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-            aliquip ex ea commodo consequat. Duis aute irure dolor in
-            reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-            pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-            culpa qui officia deserunt mollit anim id est laborum.
+            {{ user.company.catchPhrase }}
           </p>
         </div>
       </div>
-    </template>
-    <template v-else>
-      <p>Выберите сотрудника, чтобы посмотреть его профиль</p>
-    </template>
-  </div>
+    </div>
+  </template>
+  <template v-else>
+    <div class="empty">
+      <p class="empty__text">
+        Выберите сотрудника, чтобы посмотреть его профиль
+      </p>
+    </div>
+  </template>
 </template>
 <style lang="scss" scoped>
 h6 {
@@ -95,6 +93,16 @@ h6 {
         color: #76787d;
       }
     }
+  }
+}
+.empty {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  &__text {
+    color: #76787d;
+    font-size: 14px;
   }
 }
 </style>
