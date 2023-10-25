@@ -1,38 +1,38 @@
 <script setup lang="ts">
-import { computed, onMounted, ref, watchEffect } from "vue";
-import store from "../store";
-import { UsersMutationsTypes } from "../store/modules/users/types/mutations";
-import { UsersActionsTypes } from "../store/modules/users/types/actions";
+import { computed, ref, watchEffect } from "vue";
 
-const filteredUsers = computed(() => store.state.users.filteredItems);
+import { UsersActionsTypes } from "../store/modules/users/types/actions";
+import { UsersMutationsTypes } from "../store/modules/users/types/mutations";
+import { User } from "../store/modules/users/types";
+import store from "../store";
+
+const users = computed(() => store.state.users.items);
 const filterValue = ref("");
 
-onMounted(async () => {
-  await store.dispatch(UsersActionsTypes.FETCH_USERS);
-});
+const onSelectUser = async (user: User) => {
+  await store.commit(UsersMutationsTypes.SELECT_USER, user);
+  console.log(store.state);
+};
 
 watchEffect(async () => {
-  await store.commit(
-    UsersMutationsTypes.FILTER_USERS,
-
-    filterValue.value
-  );
+  await store.dispatch(UsersActionsTypes.FETCH_USERS, filterValue.value);
 });
 </script>
 <template>
   <div class="sidebar">
     <div class="sidebar__search">
       <h6 class="sidebar__search-title">Поиск сотрудников</h6>
-      <input type="text" class="sidebar__search-input" v-model="filterValue" />
+      <input
+        type="text"
+        class="sidebar__search-input"
+        v-model="filterValue"
+        placeholder="Введите id сотрудника"
+      />
     </div>
     <div class="sidebar__results">
       <h6 class="sidebar__results-title">Результаты</h6>
-      <template v-if="filteredUsers.length">
-        <div
-          class="sidebar__results-card"
-          v-for="item in filteredUsers"
-          :key="item.id"
-        >
+      <template v-if="users.length">
+        <div class="sidebar__results-card" v-for="item in users" :key="item.id">
           <div class="sidebar__results-card-image">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -45,7 +45,10 @@ watchEffect(async () => {
               />
             </svg>
           </div>
-          <div class="sidebar__results-card-content">
+          <div
+            class="sidebar__results-card-content"
+            @click="onSelectUser(item)"
+          >
             <p>{{ item.name }}</p>
             <span>{{ item.email }}</span>
           </div>
@@ -102,6 +105,10 @@ watchEffect(async () => {
         span {
           color: #76787d;
           margin-top: 5px;
+        }
+        &:hover {
+          background-color: #e0e0e0;
+          cursor: pointer;
         }
       }
     }

@@ -4,10 +4,13 @@ import { usersApi } from "../../../services/usersApi";
 import { LoadingStatus } from "../../../types/LoadingStatus";
 
 export const actions = {
-  async [UsersActionsTypes.FETCH_USERS]({ commit }: AugmentedActionContext) {
+  async [UsersActionsTypes.FETCH_USERS](
+    { commit }: AugmentedActionContext,
+    filterValue: string
+  ) {
     try {
       commit(UsersMutationsTypes.SET_LOADING_STATUS, LoadingStatus.LOADING);
-      const users = await usersApi.fetchUsers();
+      const users = await usersApi.fetchUsers(filterValue);
 
       if (users) {
         commit(UsersMutationsTypes.SET_USERS, users);
