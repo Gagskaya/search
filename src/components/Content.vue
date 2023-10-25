@@ -48,6 +48,7 @@ h6 {
   padding: 30px 30px 30px 21px;
   display: flex;
   &__image {
+    max-height: 300px;
     flex-basis: 48%;
     display: flex;
     justify-content: center;
