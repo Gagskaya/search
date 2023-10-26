@@ -6,30 +6,40 @@ import { UsersMutationsTypes } from "../store/modules/users/types/mutations";
 import { User } from "../store/modules/users/types";
 import store from "../store";
 
-const users = computed(() => store.state.users.items);
-const user = computed<User>(() => store.state.users.selectedUser);
+const users = computed<User[]>(() => store.state.users.items);
+const selectedUser = computed<User>(() => store.state.users.selectedUser);
 
-const filterValue = ref("");
+const idFilterValue = ref("");
+const usernameFilterValue = ref("");
+
 
 const onSelectUser = async (user: User) => {
   await store.commit(UsersMutationsTypes.SELECT_USER, user);
 };
 
 watchEffect(async () => {
-  await store.dispatch(
-    UsersActionsTypes.FETCH_USERS,
-    filterValue.value.replace(/\s/g, "").split(",")
+    await store.dispatch(
+    UsersActionsTypes.FETCH_USERS_BY_ID,
+    idFilterValue.value.replace(/\s/g, "").split(",")
   );
+  
 });
 watchEffect(async () => {
-  if (!filterValue.value.length) {
+    await store.dispatch(
+    UsersActionsTypes.FETCH_USERS_BY_USERNAME,
+    usernameFilterValue.value.replace(/\s/g, "").split(",")
+  );
+  
+});
+watchEffect(async () => {
+  if (!idFilterValue.value.length && !usernameFilterValue.value.length) {
     await store.commit(UsersMutationsTypes.SELECT_USER, null);
   }
 });
 
-watchEffect(() => {
-  console.log(filterValue.value.replace(/\s/g, "").split(","));
-});
+// watchEffect(() => {
+//   console.log(filterValue.value.replace(/\s/g, "").split(","));
+// });
 </script>
 <template>
   <div class="sidebar">
@@ -38,8 +48,17 @@ watchEffect(() => {
       <input
         type="text"
         class="sidebar__search-input"
-        v-model="filterValue"
-        placeholder="Введите id сотрудника"
+        v-model="idFilterValue"
+        placeholder="Введите id"
+        style="margin-bottom: 15px;"
+        :disabled="usernameFilterValue.length"
+      />
+      <input
+        type="text"
+        class="sidebar__search-input"
+        v-model="usernameFilterValue"
+        placeholder="Введите имя"
+        :disabled="idFilterValue.length"
       />
     </div>
     <div class="sidebar__results">
@@ -61,7 +80,7 @@ watchEffect(() => {
           <div
             :class="[
               'sidebar__results-card-content',
-              item.id === user?.id ? 'active' : '',
+              item.id === selectedUser?.id ? 'active' : '',
             ]"
             @click="onSelectUser(item)"
           >
@@ -93,6 +112,13 @@ watchEffect(() => {
       border: 1.5px solid var(--all-colors-gray-gray-200, #e9ecef);
       border-radius: 8px;
       color: #76787d;
+      &:disabled {
+        border-color: red;
+        cursor: not-allowed;
+        ::placeholder {
+          color: red;
+        }
+      }
     }
   }
   &__results {

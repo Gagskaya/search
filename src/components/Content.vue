@@ -4,10 +4,10 @@ import { computed } from "vue";
 import { User } from "../store/modules/users/types";
 import store from "../store";
 
-const user = computed<User>(() => store.state.users.selectedUser);
+const selectedUser = computed<User>(() => store.state.users.selectedUser);
 </script>
 <template>
-  <template v-if="user">
+  <template v-if="selectedUser">
     <div class="content">
       <div class="content__image">
         <svg
@@ -23,19 +23,19 @@ const user = computed<User>(() => store.state.users.selectedUser);
         </svg>
       </div>
       <div class="content__info">
-        <h6 class="content__info-name">{{ user.username }}</h6>
+        <h6 class="content__info-name">{{ selectedUser.username }}</h6>
         <div class="content__info-email">
           <span>email: </span>
-          <p>{{ user.email }}</p>
+          <p>{{ selectedUser.email }}</p>
         </div>
         <div class="content__info-email">
           <span>phone: </span>
-          <p>{{ user.phone }}</p>
+          <p>{{ selectedUser.phone }}</p>
         </div>
         <div class="content__info-about">
           <h6 class="content__info-about-title">О себе:</h6>
           <p class="content__info-about-text">
-            {{ user.company.catchPhrase }}
+            {{ selectedUser.company.catchPhrase }}
           </p>
         </div>
       </div>
